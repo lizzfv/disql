@@ -1,9 +1,3 @@
-```
-======================================================================
- Distributed SQL Query System
-======================================================================
-```
-
 # DiSQL
 
 Sistema de consulta SQL distribuida que actua como punto de acceso
