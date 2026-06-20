@@ -1,0 +1,8 @@
+Flask==3.1.3
+cryptography==41.0.7
+matplotlib==3.6.3
+numpy==1.26.4
+oracledb==3.4.2
+psycopg2-binary==2.9.11
+PyMySQL==1.1.2
+sqlglot==29.0.1

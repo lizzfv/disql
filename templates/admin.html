@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DiSQL; Panel Admin</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0d1117;
+            color: #e6edf3;
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+
+        .container { max-width: 1100px; margin: 0 auto; }
+
+        header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-bottom: 24px;
+            border-bottom: 1px solid #2d3748;
+            margin-bottom: 32px;
+        }
+
+        header h1 {
+            font-size: 1.6rem;
+            color: #ffffff;
+            letter-spacing: 3px;
+        }
+
+        header p {
+            font-size: 0.78rem;
+            color: #7d9ab5;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-top: 4px;
+        }
+
+        .header-links {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .btn {
+            padding: 9px 20px;
+            border-radius: 6px;
+            font-size: 0.82rem;
+            font-family: 'Inter', sans-serif;
+            font-weight: 600;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            cursor: pointer;
+            text-decoration: none;
+            border: none;
+            transition: background-color 0.2s;
+        }
+
+        .btn-primary {
+            background-color: #1f6feb;
+            color: white;
+        }
+
+        .btn-primary:hover { background-color: #1158c7; }
+
+        .btn-ghost {
+            background-color: transparent;
+            color: #7d9ab5;
+            border: 1px solid #2d3748;
+        }
+
+        .btn-ghost:hover { color: #e6edf3; border-color: #4a5568; }
+
+        .btn-danger {
+            background-color: transparent;
+            color: #ff7b72;
+            border: 1px solid #3d1a1a;
+            padding: 6px 14px;
+            font-size: 0.78rem;
+        }
+
+        .btn-danger:hover { background-color: #1a0d0d; }
+
+        /* MENSAJES */
+        .mensaje {
+            background-color: #0d1f15;
+            border: 1px solid #2d5a3d;
+            border-radius: 8px;
+            padding: 14px 18px;
+            color: #7ee787;
+            font-size: 0.88rem;
+            margin-bottom: 24px;
+        }
+
+        .error-box {
+            background-color: #1a0d0d;
+            border: 1px solid #3d1a1a;
+            border-radius: 8px;
+            padding: 14px 18px;
+            color: #ff7b72;
+            font-size: 0.88rem;
+            margin-bottom: 24px;
+        }
+
+        /* SECCIONES */
+        .seccion {
+            background-color: #161b22;
+            border: 1px solid #2d3748;
+            border-radius: 10px;
+            margin-bottom: 28px;
+            overflow: hidden;
+        }
+
+        .seccion-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 18px 24px;
+            border-bottom: 1px solid #2d3748;
+        }
+
+        .seccion-header h2 {
+            font-size: 0.88rem;
+            color: #7d9ab5;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+        }
+
+        thead tr {
+            background-color: #0d1117;
+            border-bottom: 1px solid #2d3748;
+        }
+
+        thead th {
+            padding: 12px 24px;
+            text-align: left;
+            font-size: 0.75rem;
+            color: #7d9ab5;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+
+        tbody tr {
+            border-bottom: 1px solid #1a2030;
+        }
+
+        tbody tr:last-child { border-bottom: none; }
+
+        tbody tr:hover { background-color: #1a2030; }
+
+        tbody td {
+            padding: 12px 24px;
+            color: #e6edf3;
+            font-size: 0.88rem;
+        }
+
+        .empty {
+            padding: 32px 24px;
+            color: #3d5a73;
+            font-size: 0.88rem;
+            text-align: center;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        .badge-mariadb { background-color: #0d1f15; color: #7ee787; border: 1px solid #2d5a3d; }
+        .badge-postgres { background-color: #0d1530; color: #79c0ff; border: 1px solid #1e3a5f; }
+        .badge-oracle   { background-color: #1f130d; color: #ffa657; border: 1px solid #5a3f2a; }
+    </style>
+</head>
+<body>
+    <div class="container">
+
+        <header>
+            <div>
+                <h1>DiSQL</h1>
+                <p>Panel de administración</p>
+            </div>
+            <div class="header-links">
+                <a href="/admin/anadir" class="btn btn-primary">+ Añadir SGBD</a>
+                <a href="/" class="btn btn-ghost"> Volver a DiSQL</a>
+            </div>
+        </header>
+
+        {% if mensaje %}
+        <div class="mensaje">{{ mensaje }}</div>
+        {% endif %}
+
+        {% if error %}
+        <div class="error-box">{{ error }}</div>
+        {% endif %}
+
+        <!-- SGBDs registrados -->
+        <div class="seccion">
+            <div class="seccion-header">
+                <h2>SGBDs registrados</h2>
+            </div>
+            {% if sgbds %}
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Tipo</th>
+                        <th>Host</th>
+                        <th>Puerto</th>
+                        <th>Usuario</th>
+                        <th>Base de datos</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for s in sgbds %}
+                    <tr>
+                        <td>{{ s.id }}</td>
+                        <td><span class="badge badge-{{ s.tipo }}">{{ s.tipo }}</span></td>
+                        <td>{{ s.host }}</td>
+                        <td>{{ s.puerto_bd }}</td>
+                        <td>{{ s.usuario }}</td>
+                        <td>{{ s.base_datos }}</td>
+                        <td>
+                            <form method="POST" action="/admin/eliminar_sgbd/{{ s.id }}"
+                                  onsubmit="return confirm('Eliminar este SGBD y todas sus tablas?')">
+                                <button type="submit" class="btn btn-danger">Eliminar</button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <div class="empty">No hay SGBDs registrados.</div>
+            {% endif %}
+        </div>
+
+        <!-- Tablas registradas -->
+        <div class="seccion">
+            <div class="seccion-header">
+                <h2>Tablas registradas</h2>
+            </div>
+            {% if tablas %}
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Tabla</th>
+                        <th>SGBD</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for t in tablas %}
+                    <tr>
+                        <td>{{ t.id }}</td>
+                        <td>{{ t.nombre }}</td>
+                        <td><span class="badge badge-{{ t.tipo }}">{{ t.tipo }}</span></td>
+                        <td>
+                            <form method="POST" action="/admin/eliminar_tabla/{{ t.id }}"
+                                  onsubmit="return confirm('¿Eliminar esta tabla del catálogo?')">
+                                <button type="submit" class="btn btn-danger">Eliminar</button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <div class="empty">No hay tablas registradas.</div>
+            {% endif %}
+        </div>
+
+    </div>
+</body>
+</html>

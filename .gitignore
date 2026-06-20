@@ -1,0 +1,27 @@
+# Credenciales y datos sensibles del catálogo
+catalogo.db
+clave.key
+
+# Scripts de conexión a la infraestructura (contienen rutas/credenciales de la UGR)
+ssh.sh
+connectTunnel.sh
+
+# Cache de Python
+__pycache__/
+*.pyc
+*.pyo
+
+# Entornos virtuales
+venv/
+env/
+.venv/
+
+# Archivos de configuración local
+.env
+
+# Imágenes generadas por las pruebas (van a Drive, no a GitHub)
+pruebas/imagenes/
+
+# Archivos del sistema
+.DS_Store
+Thumbs.db

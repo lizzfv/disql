@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DiSQL — Distributed SQL Query System</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0d1117;
+            color: #e6edf3;
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        /* CABECERA */
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-bottom: 28px;
+            border-bottom: 1px solid #2d3748;
+        }
+
+        header h1 {
+            font-size: 2.4rem;
+            color: #ffffff;
+            letter-spacing: 4px;
+            font-weight: 700;
+        }
+
+        header p {
+            color: #7d9ab5;
+            font-size: 0.85rem;
+            margin-top: 8px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        /* FORMULARIO */
+        .query-box {
+            background-color: #161b22;
+            border: 1px solid #2d3748;
+            border-radius: 10px;
+            padding: 28px;
+            margin-bottom: 32px;
+        }
+        .query-box label {
+            display: block;
+            font-size: 0.78rem;
+            color: #7d9ab5;
+            margin-bottom: 10px;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+
+        .query-box textarea {
+            width: 100%;
+            background-color: #0d1117;
+            border: 1px solid #1e3a5f;
+            border-radius: 6px;
+            color: #e6edf3;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.95rem;
+            padding: 14px;
+            resize: vertical;
+            min-height: 80px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .query-box textarea:focus {
+            border-color: #2d3748;
+        }
+
+        .query-box button {
+            margin-top: 14px;
+            background-color: #1f6feb;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            padding: 12px 32px;
+            font-size: 0.88rem;
+            font-family: 'Inter', sans-serif;
+            font-weight: 600;
+            cursor: pointer;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            transition: background-color 0.2s;
+        }
+
+        .query-box button:hover {
+            background-color: #1158c7;
+        }
+
+        /* BOTÓN DE DESCARGA */
+        .btn-descargar {
+            background-color: #238636;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            padding: 10px 20px;
+            font-size: 0.82rem;
+            font-family: 'Inter', sans-serif;
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            transition: background-color 0.2s;
+        }
+
+        .btn-descargar:hover {
+            background-color: #2ea043;
+        }
+
+        /* ERROR */
+        .error-box {
+            background-color: #1a1a2e;
+            border: 1px solid #3d3d6b;
+            border-radius: 8px;
+            padding: 16px 20px;
+            color: #ff7b72;
+            margin-bottom: 24px;
+            font-size: 0.92rem;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        /* PANEL DE ACCIONES EXTRA */
+        .acciones-tabla {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        /* LEYENDA */
+        .leyenda {
+            display: flex;
+            flex-direction: row;
+            gap: 20px;
+            align-items: center;
+            flex-wrap: nowrap;
+            transition: opacity 0.2s ease;
+            opacity: 0.15;          /* Modificado: empieza difuminado */
+            pointer-events: none;   /* Modificado: empieza bloqueado */
+        }
+
+        .leyenda-titulo {
+            font-size: 0.78rem;
+            color: #7d9ab5;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .leyenda-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.82rem;
+            color: #7d9ab5;
+            font-weight: 500;
+            white-space: nowrap;
+        }
+
+        .leyenda-color {
+            width: 12px;
+            height: 12px;
+            border-radius: 3px;
+            flex-shrink: 0;
+        }
+
+        .color-mariadb {
+            background-color: #1e3a2a;
+            border: 1px solid #2d5a3d;
+        }
+
+        .color-postgres {
+            background-color: #1a2a4a;
+            border: 1px solid #2a3f6f;
+        }
+
+        .color-oracle {
+            background-color: #3a2a1a;
+            border: 1px solid #5a3f2a;
+        }
+
+        /* CHECKBOX DE METAINFORMACION */
+        .contenedor-checkbox {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.85rem;
+            color: #7d9ab5;
+            font-weight: 500;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .contenedor-checkbox input {
+            cursor: pointer;
+            width: 15px;
+            height: 15px;
+            accent-color: #1f6feb;
+        }
+
+        /* INFO FILAS */
+        .info-filas {
+            font-size: 0.82rem;
+            color: #7d9ab5;
+            margin-bottom: 12px;
+            font-weight: 500;
+        }
+
+        /* TABLA */
+        .tabla-wrapper {
+            overflow-x: auto;
+            border-radius: 10px;
+            border: 1px solid #2d3748;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+        }
+
+        thead tr {
+            background-color: #161b22;
+            border-bottom: 2px solid #2d3748;
+        }
+
+        thead th {
+            padding: 14px 18px;
+            text-align: left;
+            letter-spacing: 1px;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            color: #7d9ab5;
+        }
+
+        tbody tr {
+            border-bottom: 1px solid #161b22;
+            transition: filter 0.15s, background-color 0.2s ease;
+        }
+
+        tbody tr:hover {
+            filter: brightness(1.15);
+        }
+
+        /* Colores dinámicos por SGBD con selector de activación */
+        body.mostrar-origen tbody tr.fila-mariadb {
+            background-color: #0d1f15;
+        }
+
+        body.mostrar-origen tbody tr.fila-postgres {
+            background-color: #0d1530;
+        }
+
+        body.mostrar-origen tbody tr.fila-oracle {
+            background-color: #1f130d;
+        }
+
+        /* Fondo por defecto cuando la metainformación está desactivada (Gris DiSQL) */
+        tbody tr {
+            background-color: #0d1117;
+        }
+
+        tbody td {
+            padding: 12px 18px;
+            color: #e6edf3;
+            font-size: 0.9rem;
+        }
+
+        /* ESTADO VACIO */
+        .empty {
+            text-align: center;
+            padding: 48px;
+            color: #3d5a73;
+            font-size: 0.95rem;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+
+        <header>
+            <h1>DiSQL</h1>
+            <p>Distributed SQL Query System</p>
+        </header>
+
+        <div style="margin-top: 16px;margin-bottom: 16px;">
+            <a href="/admin/login" style="font-size:0.78rem; color:#4a5568; text-decoration:none; letter-spacing:1px; text-transform:uppercase; border:1px solid #2d3748; padding:6px 16px; border-radius:6px;">Admin</a>
+        </div>
+        
+        <div class="query-box">
+            <label>Consulta SQL</label>
+            <form method="POST">
+                <textarea name="sql"
+                    placeholder="SELECT * FROM empleados ORDER BY salario DESC">{{ sql }}</textarea>
+                <button type="submit">Ejecutar consulta</button>
+            </form>
+        </div>
+
+        {% if error %}
+        <div class="error-box">
+            {{ error }}
+        </div>
+        {% endif %}
+
+        {% if resultados %}
+
+        <div class="info-filas">{{ resultados|length }} fila{{ 's' if resultados|length != 1 else '' }} obtenida{{ 's' if resultados|length != 1 else '' }}</div>
+
+        <div class="acciones-tabla">
+            <form action="{{ url_for('descargar_csv') }}" method="POST" style="margin: 0;">
+                <input type="hidden" name="sql" value="{{ sql }}">
+                <button type="submit" class="btn-descargar">
+                    Guardar en fichero (CSV)
+                </button>
+            </form>
+
+            <div style="display: flex; gap: 24px; align-items: center;">
+                <div class="leyenda" id="leyendaSgbd">
+                    <span class="leyenda-titulo">Origen:</span>
+                    <div class="leyenda-item">
+                        <div class="leyenda-color color-mariadb"></div> MariaDB
+                    </div>
+                    <div class="leyenda-item">
+                        <div class="leyenda-color color-postgres"></div> PostgreSQL
+                    </div>
+                    <div class="leyenda-item">
+                        <div class="leyenda-color color-oracle"></div> Oracle
+                    </div>
+                </div>
+
+                <label class="contenedor-checkbox">
+                    <input type="checkbox" id="chkMetainfo" onchange="conmutarMetainformacion()">
+                    Ver Metainformación
+                </label>
+            </div>
+        </div>
+
+        <div class="tabla-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        {% for col in columnas %}
+                        <th>{{ col }}</th>
+                        {% endfor %}
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for fila in resultados %}
+                    <tr class="fila-{{ fila['_sgbd'] }}">
+                        {% for col in columnas %}
+                        <td>{{ fila[col] }}</td>
+                        {% endfor %}
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        {% elif request.method == 'POST' and not error %}
+        <div class="empty">La consulta no ha devuelto resultados.</div>
+        {% endif %}
+
+    </div>
+
+    <script>
+        function conmutarMetainformacion() {
+            var checkbox = document.getElementById('chkMetainfo');
+            var leyenda = document.getElementById('leyendaSgbd');
+            
+            if (checkbox.checked) {
+                document.body.classList.add('mostrar-origen');
+                leyenda.style.opacity = "1";
+                leyenda.style.pointerEvents = "auto";
+            } else {
+                document.body.classList.remove('mostrar-origen');
+                leyenda.style.opacity = "0.15";
+                leyenda.style.pointerEvents = "none";
+            }
+        }
+    </script>
+</body>
+
+</html>

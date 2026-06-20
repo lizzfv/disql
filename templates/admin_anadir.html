@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DiSQL — Añadir SGBD</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0d1117;
+            color: #e6edf3;
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+
+        .container { max-width: 600px; margin: 0 auto; }
+
+        header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-bottom: 24px;
+            border-bottom: 1px solid #2d3748;
+            margin-bottom: 32px;
+        }
+
+        header h1 {
+            font-size: 1.6rem;
+            color: #ffffff;
+            letter-spacing: 3px;
+        }
+
+        header p {
+            font-size: 0.78rem;
+            color: #7d9ab5;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-top: 4px;
+        }
+
+        .btn {
+            padding: 9px 20px;
+            border-radius: 6px;
+            font-size: 0.82rem;
+            font-family: 'Inter', sans-serif;
+            font-weight: 600;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            cursor: pointer;
+            text-decoration: none;
+            border: 1px solid #2d3748;
+            background-color: transparent;
+            color: #7d9ab5;
+            transition: all 0.2s;
+        }
+
+        .btn:hover { color: #e6edf3; border-color: #4a5568; }
+
+        .form-box {
+            background-color: #161b22;
+            border: 1px solid #2d3748;
+            border-radius: 10px;
+            padding: 32px;
+        }
+
+        .campo {
+            margin-bottom: 22px;
+        }
+
+        label {
+            display: block;
+            font-size: 0.75rem;
+            color: #7d9ab5;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        input, select {
+            width: 100%;
+            background-color: #0d1117;
+            border: 1px solid #2d3748;
+            border-radius: 6px;
+            color: #e6edf3;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.95rem;
+            padding: 12px 14px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        input:focus, select:focus { border-color: #4a5568; }
+
+        select option { background-color: #161b22; }
+
+        .hint {
+            font-size: 0.75rem;
+            color: #4a5568;
+            margin-top: 6px;
+        }
+
+        .btn-submit {
+            width: 100%;
+            background-color: #1f6feb;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            padding: 13px;
+            font-size: 0.88rem;
+            font-family: 'Inter', sans-serif;
+            font-weight: 600;
+            cursor: pointer;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            transition: background-color 0.2s;
+            margin-top: 8px;
+        }
+
+        .btn-submit:hover { background-color: #1158c7; }
+
+        .error-box {
+            background-color: #1a0d0d;
+            border: 1px solid #3d1a1a;
+            border-radius: 8px;
+            padding: 14px 18px;
+            color: #ff7b72;
+            font-size: 0.88rem;
+            margin-bottom: 24px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+
+        <header>
+            <div>
+                <h1>DiSQL</h1>
+                <p>Añadir nuevo SGBD</p>
+            </div>
+            <a href="/admin" class="btn">← Panel admin</a>
+        </header>
+
+        {% if error %}
+        <div class="error-box">{{ error }}</div>
+        {% endif %}
+
+        <div class="form-box">
+            <form method="POST">
+
+                <div class="campo">
+                    <label>Tipo</label>
+                    <select name="tipo">
+                        {% for tipo in tipos %}
+                        <option value="{{ tipo }}">{{ tipo }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="campo">
+                    <label>Host</label>
+                    <input type="text" name="host" placeholder="127.0.0.1">
+                </div>
+
+                <div class="campo">
+                    <label>Puerto</label>
+                    <input type="number" name="puerto" placeholder="3306">
+                </div>
+
+                <div class="campo">
+                    <label>Usuario</label>
+                    <input type="text" name="usuario" placeholder="root">
+                </div>
+
+                <div class="campo">
+                    <label>Contraseña</label>
+                    <input type="password" name="contrasena">
+                </div>
+
+                <div class="campo">
+                    <label>Base de datos / DSN</label>
+                    <input type="text" name="base_datos" placeholder="nombre_bd o DSN para Oracle">
+                    <p class="hint">Para Oracle usa el formato: host:puerto/servicio</p>
+                </div>
+
+                <button type="submit" class="btn-submit">Registrar SGBD</button>
+            </form>
+        </div>
+
+    </div>
+</body>
+</html>
